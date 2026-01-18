@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller de autenticação.
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -26,6 +29,9 @@ public class AuthController {
             "admin", new UsuarioMemoria("admin", "admin", List.of("ROLE_ADMIN", "ROLE_USER")),
             "user", new UsuarioMemoria("user", "user", List.of("ROLE_USER")));
 
+    /**
+     * Autentica usuário e retorna token JWT.
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         UsuarioMemoria usuario = USUARIOS.get(request.getUsuario());

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositório de veículos.
+ */
 @Repository
 public interface RepositorioVeiculo extends JpaRepository<Veiculo, Long>, JpaSpecificationExecutor<Veiculo> {
 
@@ -21,5 +24,4 @@ public interface RepositorioVeiculo extends JpaRepository<Veiculo, Long>, JpaSpe
 
     @Query("SELECT v.marca, COUNT(v) FROM Veiculo v WHERE v.ativo = true GROUP BY v.marca")
     List<Object[]> contarPorMarca();
-
 }

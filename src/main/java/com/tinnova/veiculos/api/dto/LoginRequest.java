@@ -3,6 +3,9 @@ package com.tinnova.veiculos.api.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * DTO para requisição de login.
+ */
 @Data
 public class LoginRequest {
 

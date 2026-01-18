@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+/**
+ * Cliente para API de cotação AwesomeAPI.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

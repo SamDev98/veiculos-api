@@ -16,12 +16,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Serviço de aplicação para operações de veículos.
+ */
 @Service
 @RequiredArgsConstructor
 public class ServicoVeiculo {
 
     private final RepositorioVeiculo repositorio;
 
+    /**
+     * Lista veículos ativos com filtros opcionais e paginação.
+     */
     @Transactional(readOnly = true)
     public Page<Veiculo> listar(String marca, Integer ano, String cor,
             BigDecimal minPreco, BigDecimal maxPreco,
@@ -47,11 +53,17 @@ public class ServicoVeiculo {
         return repositorio.findAll(spec, pageable);
     }
 
+    /**
+     * Busca veículo ativo por ID.
+     */
     @Transactional(readOnly = true)
     public Optional<Veiculo> buscarPorId(Long id) {
         return repositorio.findByIdAndAtivoTrue(id);
     }
 
+    /**
+     * Cria um novo veículo. Lança PlacaDuplicadaException se a placa já existir.
+     */
     @Transactional
     public Veiculo criar(Veiculo veiculo) {
         if (repositorio.existsByPlaca(veiculo.getPlaca())) {
@@ -60,6 +72,9 @@ public class ServicoVeiculo {
         return repositorio.save(veiculo);
     }
 
+    /**
+     * Atualiza todos os campos de um veículo (PUT).
+     */
     @Transactional
     public Veiculo atualizar(Long id, Veiculo dadosAtualizados) {
         Veiculo existente = repositorio.findByIdAndAtivoTrue(id)
@@ -79,6 +94,9 @@ public class ServicoVeiculo {
         return repositorio.save(existente);
     }
 
+    /**
+     * Atualiza apenas os campos informados (PATCH).
+     */
     @Transactional
     public Veiculo atualizarParcial(Long id, Veiculo dadosParciais) {
         Veiculo existente = repositorio.findByIdAndAtivoTrue(id)
@@ -109,6 +127,9 @@ public class ServicoVeiculo {
         return repositorio.save(existente);
     }
 
+    /**
+     * Remove um veículo (soft delete).
+     */
     @Transactional
     public void remover(Long id) {
         Veiculo veiculo = repositorio.findByIdAndAtivoTrue(id)
@@ -117,12 +138,14 @@ public class ServicoVeiculo {
         repositorio.save(veiculo);
     }
 
+    /**
+     * Conta veículos ativos agrupados por marca.
+     */
     @Transactional(readOnly = true)
     public List<Object[]> contarPorMarca() {
         return repositorio.contarPorMarca();
     }
 
-    // Specifications para filtros
     private Specification<Veiculo> ativoTrue() {
         return (root, query, cb) -> cb.isTrue(root.get("ativo"));
     }

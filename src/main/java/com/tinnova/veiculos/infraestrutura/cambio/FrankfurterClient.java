@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+/**
+ * Cliente para API de cotação Frankfurter (fallback).
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

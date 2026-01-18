@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Controller REST para operações de veículos.
+ */
 @RestController
 @RequestMapping("/veiculos")
 @RequiredArgsConstructor
@@ -23,6 +26,9 @@ public class VeiculoController {
 
     private final ServicoVeiculo servicoVeiculo;
 
+    /**
+     * Lista veículos com filtros e paginação.
+     */
     @GetMapping
     public ResponseEntity<Page<VeiculoResponse>> listar(
             @RequestParam(required = false) String marca,
@@ -39,6 +45,9 @@ public class VeiculoController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Busca veículo por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<VeiculoResponse> buscarPorId(@PathVariable Long id) {
         return servicoVeiculo.buscarPorId(id)
@@ -47,6 +56,9 @@ public class VeiculoController {
                 .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
     }
 
+    /**
+     * Retorna contagem de veículos por marca.
+     */
     @GetMapping("/relatorios/por-marca")
     public ResponseEntity<List<RelatorioPorMarcaResponse>> relatorioPorMarca() {
         List<RelatorioPorMarcaResponse> relatorio = servicoVeiculo.contarPorMarca().stream()
@@ -56,12 +68,18 @@ public class VeiculoController {
         return ResponseEntity.ok(relatorio);
     }
 
+    /**
+     * Cria um novo veículo. Requer ADMIN.
+     */
     @PostMapping
     public ResponseEntity<VeiculoResponse> criar(@Valid @RequestBody VeiculoRequest request) {
         var veiculo = servicoVeiculo.criar(request.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(VeiculoResponse.fromEntity(veiculo));
     }
 
+    /**
+     * Atualiza todos os campos de um veículo. Requer ADMIN.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<VeiculoResponse> atualizar(@PathVariable Long id,
             @Valid @RequestBody VeiculoRequest request) {
@@ -69,6 +87,9 @@ public class VeiculoController {
         return ResponseEntity.ok(VeiculoResponse.fromEntity(veiculo));
     }
 
+    /**
+     * Atualiza campos específicos de um veículo. Requer ADMIN.
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<VeiculoResponse> atualizarParcial(@PathVariable Long id,
             @RequestBody VeiculoRequest request) {
@@ -76,6 +97,9 @@ public class VeiculoController {
         return ResponseEntity.ok(VeiculoResponse.fromEntity(veiculo));
     }
 
+    /**
+     * Remove um veículo (soft delete). Requer ADMIN.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         servicoVeiculo.remover(id);

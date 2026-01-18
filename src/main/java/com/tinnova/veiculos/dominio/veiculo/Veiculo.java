@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa um veículo no sistema.
+ * Implementa soft delete através do campo {@code ativo}.
+ */
 @Entity
 @Table(name = "veiculo")
 @Data
@@ -60,6 +64,9 @@ public class Veiculo {
         atualizadoEm = LocalDateTime.now();
     }
 
+    /**
+     * Marca o veículo como inativo (soft delete).
+     */
     public void desativar() {
         this.ativo = false;
     }

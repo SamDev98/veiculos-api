@@ -7,6 +7,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * DTO de resposta para veículos.
+ */
 @Data
 @Builder
 public class VeiculoResponse {
@@ -22,6 +25,9 @@ public class VeiculoResponse {
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 
+    /**
+     * Converte entidade Veiculo para DTO.
+     */
     public static VeiculoResponse fromEntity(Veiculo veiculo) {
         return VeiculoResponse.builder()
                 .id(veiculo.getId())

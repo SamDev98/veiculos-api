@@ -8,6 +8,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO padrão para respostas de erro da API.
+ */
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,6 +23,9 @@ public class ErroResponse {
     private String caminho;
     private List<CampoErro> detalhes;
 
+    /**
+     * Detalhes de erro por campo (validação).
+     */
     @Data
     @AllArgsConstructor
     public static class CampoErro {

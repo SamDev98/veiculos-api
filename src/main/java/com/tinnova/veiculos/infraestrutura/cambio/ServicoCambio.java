@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Serviço de câmbio USD/BRL com cache Redis.
+ * Usa AwesomeAPI como fonte primária e Frankfurter como fallback.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,9 @@ public class ServicoCambio {
     private final FrankfurterClient frankfurterClient;
     private final RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * Obtém a cotação USD/BRL do cache ou APIs externas.
+     */
     public BigDecimal obterCotacaoUsdBrl() {
         String cacheado = redisTemplate.opsForValue().get(CACHE_KEY);
         if (cacheado != null) {
@@ -43,6 +50,9 @@ public class ServicoCambio {
         throw new RuntimeException("Não foi possível obter cotação USD/BRL");
     }
 
+    /**
+     * Converte valor de USD para BRL.
+     */
     public BigDecimal converterUsdParaBrl(BigDecimal valorUsd) {
         return valorUsd.multiply(obterCotacaoUsdBrl());
     }

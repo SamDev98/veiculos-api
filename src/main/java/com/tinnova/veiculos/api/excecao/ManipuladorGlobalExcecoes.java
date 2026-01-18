@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Handler centralizado de exceções da API.
+ */
 @RestControllerAdvice
 public class ManipuladorGlobalExcecoes {
 

@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Utilitário para geração e validação de tokens JWT.
+ */
 @Component
 public class JwtUtil {
 
@@ -24,6 +27,9 @@ public class JwtUtil {
         this.expirationMs = expirationMs;
     }
 
+    /**
+     * Gera um token JWT para o usuário.
+     */
     public String gerarToken(String username, List<String> roles) {
         Date agora = new Date();
         Date expiracao = new Date(agora.getTime() + expirationMs);
@@ -37,15 +43,24 @@ public class JwtUtil {
                 .compact();
     }
 
+    /**
+     * Extrai o username do token.
+     */
     public String extrairUsername(String token) {
         return extrairClaims(token).getSubject();
     }
 
+    /**
+     * Extrai as roles do token.
+     */
     @SuppressWarnings("unchecked")
     public List<String> extrairRoles(String token) {
         return extrairClaims(token).get("roles", List.class);
     }
 
+    /**
+     * Valida se o token é válido e não expirou.
+     */
     public boolean validarToken(String token) {
         try {
             extrairClaims(token);
