@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -114,6 +115,11 @@ public class ServicoVeiculo {
                 .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
         veiculo.desativar();
         repositorio.save(veiculo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Object[]> contarPorMarca() {
+        return repositorio.contarPorMarca();
     }
 
     // Specifications para filtros
