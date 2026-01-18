@@ -11,12 +11,10 @@ import java.util.Optional;
 @Repository
 public interface RepositorioVeiculo extends JpaRepository<Veiculo, Long>, JpaSpecificationExecutor<Veiculo> {
 
-    // Busca apenas veiculos ativos
     List<Veiculo> findByAtivoTrue();
 
     Optional<Veiculo> findByIdAndAtivoTrue(Long id);
 
-    // Verifica placa duplicada
     boolean existsByPlaca(String placa);
 
     boolean existsByPlacaAndIdNot(String placa, Long id);
