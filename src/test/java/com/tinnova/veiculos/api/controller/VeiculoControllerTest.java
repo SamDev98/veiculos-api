@@ -5,6 +5,7 @@ import com.tinnova.veiculos.aplicacao.veiculo.ServicoVeiculo;
 import com.tinnova.veiculos.dominio.veiculo.PlacaDuplicadaException;
 import com.tinnova.veiculos.dominio.veiculo.Veiculo;
 import com.tinnova.veiculos.dominio.veiculo.VeiculoNaoEncontradoException;
+import com.tinnova.veiculos.infraestrutura.cambio.ServicoCambio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +37,9 @@ class VeiculoControllerTest {
     @Mock
     private ServicoVeiculo servicoVeiculo;
 
+    @Mock
+    private ServicoCambio servicoCambio;
+
     @InjectMocks
     private VeiculoController controller;
 
@@ -43,6 +48,8 @@ class VeiculoControllerTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(servicoCambio.obterCotacaoUsdBrl()).thenReturn(new BigDecimal("5.00"));
+
         veiculoExemplo = Veiculo.builder()
                 .id(1L)
                 .placa("ABC1234")

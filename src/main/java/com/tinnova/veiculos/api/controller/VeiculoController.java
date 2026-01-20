@@ -4,9 +4,12 @@ import com.tinnova.veiculos.api.dto.RelatorioPorMarcaResponse;
 import com.tinnova.veiculos.api.dto.VeiculoRequest;
 import com.tinnova.veiculos.api.dto.VeiculoResponse;
 import com.tinnova.veiculos.aplicacao.veiculo.ServicoVeiculo;
+import com.tinnova.veiculos.dominio.veiculo.Veiculo;
 import com.tinnova.veiculos.dominio.veiculo.VeiculoNaoEncontradoException;
+import com.tinnova.veiculos.infraestrutura.cambio.ServicoCambio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,12 +22,14 @@ import java.util.List;
 /**
  * Controller REST para operações de veículos.
  */
+@Slf4j
 @RestController
 @RequestMapping("/veiculos")
 @RequiredArgsConstructor
 public class VeiculoController {
 
     private final ServicoVeiculo servicoVeiculo;
+    private final ServicoCambio servicoCambio;
 
     /**
      * Lista veículos com filtros e paginação.
@@ -40,7 +45,7 @@ public class VeiculoController {
 
         Page<VeiculoResponse> response = servicoVeiculo
                 .listar(marca, ano, cor, minPreco, maxPreco, pageable)
-                .map(VeiculoResponse::fromEntity);
+                .map(this::toResponse);
 
         return ResponseEntity.ok(response);
     }
@@ -51,7 +56,7 @@ public class VeiculoController {
     @GetMapping("/{id}")
     public ResponseEntity<VeiculoResponse> buscarPorId(@PathVariable Long id) {
         return servicoVeiculo.buscarPorId(id)
-                .map(VeiculoResponse::fromEntity)
+                .map(this::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
     }
@@ -74,7 +79,7 @@ public class VeiculoController {
     @PostMapping
     public ResponseEntity<VeiculoResponse> criar(@Valid @RequestBody VeiculoRequest request) {
         var veiculo = servicoVeiculo.criar(request.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body(VeiculoResponse.fromEntity(veiculo));
+        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(veiculo));
     }
 
     /**
@@ -84,7 +89,7 @@ public class VeiculoController {
     public ResponseEntity<VeiculoResponse> atualizar(@PathVariable Long id,
             @Valid @RequestBody VeiculoRequest request) {
         var veiculo = servicoVeiculo.atualizar(id, request.toEntity());
-        return ResponseEntity.ok(VeiculoResponse.fromEntity(veiculo));
+        return ResponseEntity.ok(toResponse(veiculo));
     }
 
     /**
@@ -94,7 +99,7 @@ public class VeiculoController {
     public ResponseEntity<VeiculoResponse> atualizarParcial(@PathVariable Long id,
             @RequestBody VeiculoRequest request) {
         var veiculo = servicoVeiculo.atualizarParcial(id, request.toEntity());
-        return ResponseEntity.ok(VeiculoResponse.fromEntity(veiculo));
+        return ResponseEntity.ok(toResponse(veiculo));
     }
 
     /**
@@ -104,5 +109,16 @@ public class VeiculoController {
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         servicoVeiculo.remover(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private VeiculoResponse toResponse(Veiculo veiculo) {
+        VeiculoResponse response = VeiculoResponse.fromEntity(veiculo);
+        try {
+            BigDecimal cotacao = servicoCambio.obterCotacaoUsdBrl();
+            response.setPrecoBrl(veiculo.getPrecoUsd().multiply(cotacao));
+        } catch (Exception e) {
+            log.warn("Falha ao obter cotação: {}", e.getMessage());
+        }
+        return response;
     }
 }
